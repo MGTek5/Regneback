@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
-import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 
 const MODULES = [
@@ -14,12 +13,11 @@ const MODULES = [
       headers: req?.headers || connection.context.headers,
     }),
   }),
-  // UserModule,
+  UserModule,
 ];
 
 @Module({
   imports: MODULES,
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController]
 })
 export class AppModule {}
