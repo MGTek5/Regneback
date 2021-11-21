@@ -16,7 +16,6 @@ export class UserCreationInput {
 export class UserUpdateInput {
   @Field()
   _id: string;
-
   @Field({ nullable: true })
   email?: string;
 

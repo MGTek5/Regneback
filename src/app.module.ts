@@ -1,23 +1,19 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { MongooseModule } from '@nestjs/mongoose';
+import {MongooseModule} from "@nestjs/mongoose"
 import { GraphQLModule } from '@nestjs/graphql';
-import { UserModule } from './user/user.module';
-
-const MODULES = [
-  MongooseModule.forRoot(`mongodb://${process.env.MONGO}/regnessem`),
-  GraphQLModule.forRoot({
-    installSubscriptionHandlers: true,
-    autoSchemaFile: true,
-    context: ({ req, connection }) => ({
-      headers: req?.headers || connection.context.headers,
-    }),
-  }),
-  UserModule,
-];
+import { AppService } from './app.service';
+import { UserModule } from './users/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: MODULES,
-  controllers: [AppController]
+  imports: [
+    MongooseModule.forRoot(`mongodb://${process.env.MONGO}/regnessem`),
+    GraphQLModule.forRoot({debug:true, playground:true, autoSchemaFile:true, installSubscriptionHandlers:true}),
+    UserModule,
+    AuthModule
+  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

@@ -13,12 +13,12 @@ export class User extends Document {
   email: string;
 
   @Field(() => String)
-  @Prop({ unique: true, required: true, type: String })
-  username: string;
-
-  @Field(() => String)
   @Prop({ required: true, type: String })
   password: string;
+
+  @Field(() => String)
+  @Prop({ required: true, unique: true, type: String })
+  username: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

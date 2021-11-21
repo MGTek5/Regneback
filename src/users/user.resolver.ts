@@ -1,16 +1,25 @@
-import { Logger } from '@nestjs/common';
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Logger, UseGuards } from '@nestjs/common';
+import {
+  Args,
+  Context,
+  Mutation,
+  Query,
+  Resolver,
+  Subscription,
+} from '@nestjs/graphql';
+import { AuthGuard } from '../auth/auth.guard';
 import { PubSub } from 'graphql-subscriptions';
-import { UserCreationInput, UserUpdateInput } from './schema/user.input';
-import { User } from './schema/user.schema';
-import { UserService } from './user.service';
+import { UserCreationInput, UserUpdateInput } from './schemas/user.input';
+import { User } from './schemas/user.schema';
+import { UsersService } from './user.service';
 
 @Resolver(() => User)
-export class UserResolver {
+@UseGuards(new AuthGuard())
+export class UsersResolver {
   private pubSub: PubSub;
   private logger: Logger;
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UsersService) {
     this.pubSub = new PubSub();
     this.logger = new Logger('UserResolver');
   }
@@ -29,17 +38,15 @@ export class UserResolver {
   async createUser(
     @Args('userCreationData') userCreationData: UserCreationInput,
   ): Promise<User> {
-    const user = await this.userService.create(userCreationData);
+    const user = await this.userService.createUser(userCreationData);
     this.logger.log(`created user id ${user._id}`);
     this.pubSub.publish('userCreated', { userCreated: user });
     return user;
   }
 
   @Mutation(() => User)
-  async updateUser(
-    @Args('userUpdateData') update: UserUpdateInput,
-  ): Promise<User> {
-    const user = await this.userService.updateById(update._id, update);
+  async updateUser(@Args('userUpdateData') userUpdateData: UserUpdateInput): Promise<User> {
+    const user = await this.userService.updateById(userUpdateData);
     this.logger.log(`updated user with id ${user._id}`);
     this.pubSub.publish('userUpdated', { userUpdated: user });
     return user;
@@ -53,10 +60,18 @@ export class UserResolver {
     return user;
   }
 
+  @Subscription(() => User)
+  async userCreated(): Promise<AsyncIterator<User>> {
+    return this.pubSub.asyncIterator('userCreated');
+  }
+
+  //eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   @Query(() => User)
   async me(@Context('user') user: User) {
-    const d = await this.userService.findById(user._id.toString());
-    delete d.password;
-    return d;
+    const d = await (
+      await this.userService.findById(user._id.toString())
+    ).toJSON();
+    const { password, ...other } = d;
+    return other;
   }
 }
