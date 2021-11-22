@@ -1,0 +1,1 @@
+MONGO=localhost:27017 npm run start:dev
