@@ -5,13 +5,15 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { AppService } from './app.service';
 import { UserModule } from './users/user.module';
 import { AuthModule } from './auth/auth.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot(`mongodb://${process.env.MONGO}/regnessem`),
     GraphQLModule.forRoot({debug:true, playground:true, autoSchemaFile:true, installSubscriptionHandlers:true}),
     UserModule,
-    AuthModule
+    AuthModule,
+    ChatModule
   ],
   controllers: [AppController],
   providers: [AppService],
