@@ -1,12 +1,23 @@
-import { Logger } from '@nestjs/common';
-import { Resolver, Query, ResolveField, Parent } from '@nestjs/graphql';
+import { Logger, UseGuards } from '@nestjs/common';
+import {
+  Resolver,
+  Query,
+  ResolveField,
+  Parent,
+  Context,
+  Mutation,
+  Args,
+} from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
-import { User } from 'src/users/schemas/user.schema';
-import { UsersService } from 'src/users/user.service';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { User } from '../users/schemas/user.schema';
+import { UsersService } from '../users/user.service';
 import { ChatService } from './chat.service';
+import { ChatCreateInput } from './schemas/chat.input';
 import { Chat } from './schemas/chat.schema';
 
 @Resolver(() => Chat)
+@UseGuards(new AuthGuard())
 export class ChatResolver {
   private pubSub: PubSub;
   private logger: Logger;
@@ -20,8 +31,15 @@ export class ChatResolver {
   }
 
   @Query(() => [Chat])
-  async getChats(): Promise<Chat[]> {
-    return this.chatService.findAll();
+  async getChats(@Context('user') user: User): Promise<Chat[]> {
+    return this.chatService.findAll(user);
+  }
+
+  @Mutation(() => Chat)
+  async createChat(
+    @Args('chatCreateData') chatCreateData: ChatCreateInput,
+  ): Promise<Chat> {
+    return this.chatService.create(chatCreateData);
   }
 
   @ResolveField(() => [User])

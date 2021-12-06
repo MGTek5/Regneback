@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Schema, Prop } from '@nestjs/mongoose';
+import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { User } from '../../users/schemas/user.schema';
 import { Chat } from './chat.schema';
@@ -22,3 +22,5 @@ export class Message extends Document {
   @Prop()
   messages: string;
 }
+
+export const MessageSchema = SchemaFactory.createForClass(Message);
