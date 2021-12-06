@@ -18,4 +18,8 @@ export class ChatService {
   async create(chatCreateData: ChatCreateInput): Promise<Chat> {
     return await this.chatModel.create({ ...chatCreateData });
   }
+
+  async deleteChat(id: string): Promise<string> {
+    return (await this.chatModel.findByIdAndDelete(id))._id.toString();
+  }
 }

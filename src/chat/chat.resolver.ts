@@ -39,7 +39,18 @@ export class ChatResolver {
   async createChat(
     @Args('chatCreateData') chatCreateData: ChatCreateInput,
   ): Promise<Chat> {
-    return this.chatService.create(chatCreateData);
+    const chat = await this.chatService.create(chatCreateData);
+    this.logger.log(`chat ${chat._id} created`);
+    this.pubSub.publish('chatCreated', chat);
+    return chat;
+  }
+
+  @Mutation(() => String)
+  async deleteChat(@Args('id') id: string): Promise<string> {
+    const d = await this.chatService.deleteChat(id);
+    this.logger.log(`chat ${id} deleted`);
+    this.pubSub.publish('chatDeleted', id);
+    return d;
   }
 
   @ResolveField(() => [User])
