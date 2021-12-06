@@ -13,7 +13,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { User } from '../users/schemas/user.schema';
 import { UsersService } from '../users/user.service';
 import { ChatService } from './chat.service';
-import { ChatCreateInput } from './schemas/chat.input';
+import { ChatCreateInput, ChatUpdateInput } from './schemas/chat.input';
 import { Chat } from './schemas/chat.schema';
 
 @Resolver(() => Chat)
@@ -50,6 +50,16 @@ export class ChatResolver {
     const d = await this.chatService.deleteChat(id);
     this.logger.log(`chat ${id} deleted`);
     this.pubSub.publish('chatDeleted', id);
+    return d;
+  }
+
+  @Mutation(() => Chat)
+  async updateChat(
+    @Args('chatUpdateDate') chatUpdateData: ChatUpdateInput,
+  ): Promise<Chat> {
+    const d = await this.chatService.updateChat(chatUpdateData);
+    this.logger.log(`chat ${chatUpdateData._id} updated`);
+    this.pubSub.publish('chatUpdated', d);
     return d;
   }
 
