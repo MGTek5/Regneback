@@ -26,7 +26,7 @@ export class ChatService {
   async updateChat(chatUpdateData: ChatUpdateInput): Promise<Chat> {
     const updatedChat = await this.chatModel.findByIdAndUpdate(
       chatUpdateData._id,
-      chatUpdateData,
+      { $set: chatUpdateData },
       { new: true },
     );
 
