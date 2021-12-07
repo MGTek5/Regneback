@@ -75,7 +75,7 @@ export class ChatResolver {
   }
 
   @Subscription(() => String)
-  async onChatdeleted(): Promise<AsyncIterator<String, any, undefined>> {
+  async onChatdeleted(): Promise<AsyncIterator<string, any, undefined>> {
     return this.pubSub.asyncIterator('chatDeleted');
   }
 
