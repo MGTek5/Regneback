@@ -7,6 +7,7 @@ import {
   Context,
   Mutation,
   Args,
+  Subscription,
 } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -61,6 +62,21 @@ export class ChatResolver {
     this.logger.log(`chat ${chatUpdateData._id} updated`);
     this.pubSub.publish('chatUpdated', d);
     return d;
+  }
+
+  @Subscription(() => Chat)
+  async onChatCreated(): Promise<AsyncIterator<Chat, any, undefined>> {
+    return this.pubSub.asyncIterator('chatCreated');
+  }
+
+  @Subscription(() => Chat)
+  async onChatUpdated(): Promise<AsyncIterator<Chat, any, undefined>> {
+    return this.pubSub.asyncIterator('chatUpdated');
+  }
+
+  @Subscription(() => String)
+  async onChatdeleted(): Promise<AsyncIterator<String, any, undefined>> {
+    return this.pubSub.asyncIterator('chatDeleted');
   }
 
   @ResolveField(() => [User])
