@@ -10,17 +10,17 @@ export class Message extends Document {
   @Field(() => String)
   _id: Types.ObjectId;
 
-  @Field(() => String)
+  @Field(() => User)
   @Prop({ type: String, required: true })
   author: Types.ObjectId;
 
-  @Field(() => [Chat])
-  @Prop({ type: Types.ObjectId, ref: User.name })
+  @Field(() => Chat)
+  @Prop({ type: Types.ObjectId, ref: Chat.name })
   chat: Types.ObjectId;
 
   @Field(() => String)
   @Prop()
-  messages: string;
+  message: string;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

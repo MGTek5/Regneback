@@ -15,6 +15,10 @@ export class ChatService {
     });
   }
 
+  async findById(id: string): Promise<Chat> {
+    return await this.chatModel.findById(id);
+  }
+
   async create(chatCreateData: ChatCreateInput): Promise<Chat> {
     return await this.chatModel.create({ ...chatCreateData });
   }

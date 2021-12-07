@@ -28,7 +28,7 @@ export class ChatResolver {
     private userService: UsersService,
   ) {
     this.pubSub = new PubSub();
-    this.logger = new Logger('UserResolver');
+    this.logger = new Logger('ChatResolver');
   }
 
   @Query(() => [Chat])
@@ -75,11 +75,11 @@ export class ChatResolver {
   }
 
   @Subscription(() => String)
-  async onChatdeleted(): Promise<AsyncIterator<string, any, undefined>> {
+  async onChatDeleted(): Promise<AsyncIterator<string, any, undefined>> {
     return this.pubSub.asyncIterator('chatDeleted');
   }
 
-  @ResolveField(() => [User])
+  @ResolveField('members', () => [User])
   async resolveMembers(@Parent() chat: Chat) {
     if (chat.members) {
       return chat.members.map((e) => this.userService.findById(e.toString()));
