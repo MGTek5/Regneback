@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { GraphQLModule } from '@nestjs/graphql';
+import { GqlExecutionContext, GraphQLModule } from '@nestjs/graphql';
 import { AppService } from './app.service';
 import { UserModule } from './users/user.module';
 import { AuthModule } from './auth/auth.module';
@@ -15,9 +15,18 @@ import { ChatModule } from './chat/chat.module';
       playground: true,
       autoSchemaFile: true,
       installSubscriptionHandlers: true,
-      context: ({ req, connection }) => ({
-        headers: req?.headers || connection.context.headers,
-      }),
+      subscriptions: {
+        'subscriptions-transport-ws': {
+          onConnect: (connectionParams) => {
+            return {headers: connectionParams}
+          },
+        }
+      },
+      context: ({req, connection}) => {
+        return ({
+          headers: req?.headers || connection.context.headers
+        })
+      }
     }),
     UserModule,
     AuthModule,

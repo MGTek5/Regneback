@@ -42,16 +42,16 @@ export class ChatResolver {
   ): Promise<Chat> {
     const chat = await this.chatService.create(chatCreateData);
     this.logger.log(`chat ${chat._id} created`);
-    this.pubSub.publish('chatCreated', chat);
+    this.pubSub.publish('chatCreated', {chatCreated: chat});
     return chat;
   }
 
-  @Mutation(() => String)
-  async deleteChat(@Args('id') id: string): Promise<string> {
-    const d = await this.chatService.deleteChat(id);
+  @Mutation(() => Chat)
+  async deleteChat(@Args('id') id: string): Promise<Chat> {
+    const chat = await this.chatService.findById(id);
     this.logger.log(`chat ${id} deleted`);
-    this.pubSub.publish('chatDeleted', id);
-    return d;
+    this.pubSub.publish('chatDeleted', {chatDeleted: chat});
+    return chat;
   }
 
   @Mutation(() => Chat)
@@ -60,22 +60,28 @@ export class ChatResolver {
   ): Promise<Chat> {
     const d = await this.chatService.updateChat(chatUpdateData);
     this.logger.log(`chat ${chatUpdateData._id} updated`);
-    this.pubSub.publish('chatUpdated', d);
+    this.pubSub.publish('chatUpdated', {chatUpdated: d});
     return d;
   }
 
-  @Subscription(() => Chat)
-  async onChatCreated(): Promise<AsyncIterator<Chat, any, undefined>> {
+  @Subscription(() => Chat, {
+    filter: (payload, variables, context) => payload.chatCreated?.members.includes(context.user._id)
+  })
+  async chatCreated(): Promise<AsyncIterator<Chat, any, undefined>> {
     return this.pubSub.asyncIterator('chatCreated');
   }
 
-  @Subscription(() => Chat)
-  async onChatUpdated(): Promise<AsyncIterator<Chat, any, undefined>> {
+  @Subscription(() => Chat, {
+    filter: (payload, variables, context) => payload.chatUpdated?.members.includes(context.user._id)
+  })
+  async chatUpdated(): Promise<AsyncIterator<Chat, any, undefined>> {
     return this.pubSub.asyncIterator('chatUpdated');
   }
 
-  @Subscription(() => String)
-  async onChatDeleted(): Promise<AsyncIterator<string, any, undefined>> {
+  @Subscription(() => Chat, {
+    filter: (payload, variables, context) => payload.chatUpdated?.members.includes(context.user._id)
+  })
+  async chatDeleted(): Promise<AsyncIterator<Chat, any, undefined>> {
     return this.pubSub.asyncIterator('chatDeleted');
   }
 
