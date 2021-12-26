@@ -24,4 +24,7 @@ export class UserUpdateInput {
 
   @Field({ nullable: true })
   password?: string;
+
+  @Field({ nullable: true })
+  profileGif?: string;
 }

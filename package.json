@@ -1,5 +1,5 @@
 {
-  "name": "RegneBack",
+  "name": "regneback",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -13,6 +13,8 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "migrate": "migrate-mongo up -f ./migrate-mongo-config.js",
+    "migrate:down": "migrate-mongo down -f ./migrate-mongo-config.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -53,6 +55,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.2.5",
+    "migrate-mongo": "^8.2.3",
     "prettier": "^2.3.2",
     "source-map-support": "^0.5.20",
     "supertest": "^6.1.3",
