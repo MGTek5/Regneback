@@ -1,19 +1,23 @@
 version: "3.3"
 
 services:
-  server:
+  staging_server:
+    container_name: staging_server
     build: .
     depends_on:
       - mongo
     ports:
-      - "5000:3000"
+      - "14500:3000"
     volumes:
       - ./data/server_logs:/logs
       - ./coverage:/app/coverage
     environment:
-      - MONGO=mongo:27017
-  mongo:
+      - MONGO=staging_mongo:27017
+  staging_mongo:
+    container_name: staging_db
     image: mongo
     restart: always
+    ports:
+      - "27017:27017"
     volumes:
-      - ./data/db:/data/db
+      - ./data/staging_db:/data/db
