@@ -22,7 +22,6 @@ import { Message } from './schemas/message.schema';
 @UseGuards(new AuthGuard())
 export class MessageResolver {
   private pubSub: PubSub;
-
   private logger: Logger;
 
   constructor(
