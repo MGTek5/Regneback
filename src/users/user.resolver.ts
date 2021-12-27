@@ -45,7 +45,9 @@ export class UsersResolver {
   }
 
   @Mutation(() => User)
-  async updateUser(@Args('userUpdateData') userUpdateData: UserUpdateInput): Promise<User> {
+  async updateUser(
+    @Args('userUpdateData') userUpdateData: UserUpdateInput,
+  ): Promise<User> {
     const user = await this.userService.updateById(userUpdateData);
     this.logger.log(`updated user with id ${user._id}`);
     this.pubSub.publish('userUpdated', { userUpdated: user });
@@ -71,6 +73,7 @@ export class UsersResolver {
     const d = await (
       await this.userService.findById(user._id.toString())
     ).toJSON();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...other } = d;
     return other;
   }
