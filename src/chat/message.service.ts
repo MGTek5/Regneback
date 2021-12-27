@@ -9,10 +9,10 @@ export class MessageService {
   @InjectModel(Message.name) messageModel: Model<Message>;
 
   async getMessagesForChat(chatId: string): Promise<Message[]> {
-    return await this.messageModel.find({ chat: chatId });
+    return await this.messageModel.find({ chat: chatId }).sort("timestamp");
   }
 
   async createMessage(messageCreateData: MessageCreateInput) {
-    return await this.messageModel.create(messageCreateData);
+    return await this.messageModel.create({ ...messageCreateData, timestamp: +new Date() });
   }
 }

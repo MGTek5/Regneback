@@ -44,15 +44,15 @@ export class MessageResolver {
   ) {
     const m = await this.messageService.createMessage(messageCreateData);
     this.logger.log(`created message ${m._id}`);
-    this.pubSub.publish('messageCreated', {messageCreated: m});
+    this.pubSub.publish('messageCreated', { messageCreated: m });
     return m;
   }
 
   @Subscription(() => Message, {
-    async filter(this:MessageResolver, payload, variables, context) {
-      const chat = await this.chatService.findById(payload.messageCreated.chat)
+    async filter(this: MessageResolver, payload, variables, context) {
+      const chat = await this.chatService.findById(payload.messageCreated.chat);
       return chat?.members.includes(context.user._id);
-    }
+    },
   })
   async messageCreated(): Promise<AsyncIterator<Message, any, undefined>> {
     return this.pubSub.asyncIterator('messageCreated');
