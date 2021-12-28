@@ -20,6 +20,10 @@ export class Chat extends Document {
   @Field(() => Boolean)
   @Prop({ default: false })
   private: boolean;
+
+  @Field(() => Number)
+  @Prop({ default: 0 })
+  lastMessage: number;
 }
 
 export const ChatSchema = SchemaFactory.createForClass(Chat);
