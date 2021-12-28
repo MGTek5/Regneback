@@ -12,7 +12,7 @@ export class ChatService {
   async findAll(user: User): Promise<Chat[]> {
     return await this.chatModel.find({
       $and: [{ members: { $in: [user._id] } }, { private: false }],
-    });
+    }).sort('-lastMessage');
   }
 
   async findById(id: string): Promise<Chat> {
