@@ -14,7 +14,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async validateUser({
     email,
@@ -24,7 +24,10 @@ export class AuthService {
     const credential = email || username;
     if (!credential) throw new BadRequestException();
     const user = await this.usersService.findOne({
-      $or: [{ email: credential }, { username: credential }],
+      $and: [
+        { $or: [{ email: credential }, { username: credential }] },
+        { deactivated: false }
+      ]
     });
     if (user && bcrypt.compareSync(password, user.password)) {
       return user;
@@ -51,6 +54,7 @@ export class AuthService {
         email,
         password,
         username,
+        deactivated: false
       });
       return {
         access_token: this.generateToken(user),

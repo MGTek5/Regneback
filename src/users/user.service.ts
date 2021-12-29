@@ -16,7 +16,7 @@ export class UsersService {
     return this.userModel.findOne({ email });
   }
   async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+    return this.userModel.find({ deactivated: false }).exec();
   }
   async findOne(query: FilterQuery<User>): Promise<User> {
     return this.userModel.findOne(query).exec()
@@ -28,8 +28,8 @@ export class UsersService {
     });
     return user.save();
   }
-  async deleteById(id: string): Promise<User> {
-    return this.userModel.findByIdAndDelete(id);
+  async desactivateAccount(id: string): Promise<User> {
+    return await this.userModel.findByIdAndUpdate(id, { $set: { deactivated: true } });
   }
   async updateById(data: UserUpdateInput): Promise<User> {
     const newData = { ...data };
