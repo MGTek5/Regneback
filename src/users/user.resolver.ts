@@ -56,7 +56,7 @@ export class UsersResolver {
 
   @Mutation(() => User)
   async deleteUser(@Args('id') id: string): Promise<User> {
-    const user = await this.userService.desactivateAccount(id);
+    const user = await this.userService.deactivateAccount(id);
     this.logger.log(`removed user with id ${id}`);
     this.pubSub.publish('userDeleted', { userDeleted: user });
     return user;
