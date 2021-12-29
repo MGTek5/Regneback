@@ -16,7 +16,7 @@ export class UsersService {
     return this.userModel.findOne({ email });
   }
   async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+    return this.userModel.find({ deactivated: false }).exec();
   }
   async findOne(query: FilterQuery<User>): Promise<User> {
     return this.userModel.findOne(query).exec()
