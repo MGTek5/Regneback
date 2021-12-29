@@ -10,6 +10,9 @@ export class UserCreationInput {
 
   @Field()
   username: string;
+
+  @Field({defaultValue: false})
+  desactivated: boolean;
 }
 
 @InputType()

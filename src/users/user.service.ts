@@ -28,8 +28,8 @@ export class UsersService {
     });
     return user.save();
   }
-  async deleteById(id: string): Promise<User> {
-    return this.userModel.findByIdAndDelete(id);
+  async desactivateAccount(id: string): Promise<User> {
+    return await this.userModel.findByIdAndUpdate(id, { $set: { desactivated: true } });
   }
   async updateById(data: UserUpdateInput): Promise<User> {
     const newData = { ...data };
