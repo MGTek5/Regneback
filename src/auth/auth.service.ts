@@ -26,7 +26,7 @@ export class AuthService {
     const user = await this.usersService.findOne({
       $and: [
         { $or: [{ email: credential }, { username: credential }] },
-        { desactivated: false }
+        { deactivated: false }
       ]
     });
     if (user && bcrypt.compareSync(password, user.password)) {
@@ -54,7 +54,7 @@ export class AuthService {
         email,
         password,
         username,
-        desactivated: false
+        deactivated: false
       });
       return {
         access_token: this.generateToken(user),

@@ -12,7 +12,7 @@ export class UserCreationInput {
   username: string;
 
   @Field({defaultValue: false})
-  desactivated: boolean;
+  deactivated: boolean;
 }
 
 @InputType()
