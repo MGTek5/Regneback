@@ -25,6 +25,14 @@ export class Message extends Document {
   @Field(() => Number)
   @Prop()
   timestamp: number;
+
+  @Field(() => Number)
+  @Prop()
+  height: number;
+
+  @Field(() => Number)
+  @Prop()
+  width: number;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

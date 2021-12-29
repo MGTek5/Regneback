@@ -8,6 +8,10 @@ export class MessageCreateInput {
   author: string;
   @Field()
   chat: string;
+  @Field()
+  height: number;
+  @Field()
+  width: number;
 }
 
 export class MessageDeleteInput {
