@@ -1,13 +1,14 @@
-import { UsersService } from '../users/user.service';
 import {
   BadRequestException,
   Injectable,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { UsersService } from '../users/user.service';
 import { User } from '../users/schemas/user.schema';
 import { AuthDetails } from './schemas/auth.schema';
-import { LoginInput, RegisterInput } from './schemas/auth.input';
+import { LoginInput } from './schemas/auth.login.input';
+import { RegisterInput } from './schemas/auth.register.input';
 
 @Injectable()
 export class AuthService {
@@ -26,14 +27,15 @@ export class AuthService {
     const user = await this.usersService.findOne({
       $and: [
         { $or: [{ email: credential }, { username: credential }] },
-        { deactivated: false }
-      ]
+        { deactivated: false },
+      ],
     });
     if (user && bcrypt.compareSync(password, user.password)) {
       return user;
     }
     return null;
   }
+
   async login(data: LoginInput): Promise<AuthDetails> {
     const payload = await this.validateUser(data);
     if (payload) {
@@ -44,6 +46,7 @@ export class AuthService {
     }
     throw new BadRequestException('Something went wrong');
   }
+
   async register({
     email,
     username,
@@ -54,7 +57,7 @@ export class AuthService {
         email,
         password,
         username,
-        deactivated: false
+        deactivated: false,
       });
       return {
         access_token: this.generateToken(user),

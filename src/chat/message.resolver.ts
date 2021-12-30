@@ -15,13 +15,14 @@ import { AuthGuard } from '../auth/auth.guard';
 import { ChatService } from './chat.service';
 import { MessageService } from './message.service';
 import { Chat } from './schemas/chat.schema';
-import { MessageCreateInput } from './schemas/message.input';
+import { MessageCreateInput } from './schemas/message.create.input';
 import { Message } from './schemas/message.schema';
 
 @Resolver(() => Message)
 @UseGuards(new AuthGuard())
 export class MessageResolver {
   private pubSub: PubSub;
+
   private logger: Logger;
 
   constructor(
@@ -35,7 +36,7 @@ export class MessageResolver {
 
   @Query(() => [Message])
   async getMessages(@Args('chatId') chatId: string) {
-    return await this.messageService.getMessagesForChat(chatId);
+    return this.messageService.getMessagesForChat(chatId);
   }
 
   @Mutation(() => Message)
@@ -65,6 +66,6 @@ export class MessageResolver {
 
   @ResolveField('author', () => User)
   async resolveAuthor(@Parent() parent: Message) {
-    return await this.userService.findById(parent.author.toString());
+    return this.userService.findById(parent.author.toString());
   }
 }

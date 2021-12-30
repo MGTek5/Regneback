@@ -5,10 +5,10 @@ import { UsersResolver } from './user.resolver';
 import { UsersService } from './user.service';
 
 @Module({
-	providers: [UsersResolver, UsersService],
-	imports: [
-		MongooseModule.forFeature([{name:User.name, schema: UserSchema}])
-	],
-	exports: [UsersService]
+  providers: [UsersResolver, UsersService],
+  imports: [
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+  ],
+  exports: [UsersService],
 })
-export class UserModule {}
+export class UserModule { }
