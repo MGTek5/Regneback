@@ -67,21 +67,27 @@ export class ChatResolver {
   }
 
   @Subscription(() => Chat, {
-    filter: (payload, variables, context) => payload.chatCreated?.members.includes(context.user._id),
+    filter: (payload, variables, context) => (
+      payload.chatCreated?.members.includes(context.user._id)
+    ),
   })
   async chatCreated(): Promise<AsyncIterator<Chat, any, undefined>> {
     return this.pubSub.asyncIterator('chatCreated');
   }
 
   @Subscription(() => Chat, {
-    filter: (payload, variables, context) => payload.chatUpdated?.members.includes(context.user._id),
+    filter: (payload, variables, context) => (
+      payload.chatUpdated?.members.includes(context.user._id)
+    ),
   })
   async chatUpdated(): Promise<AsyncIterator<Chat, any, undefined>> {
     return this.pubSub.asyncIterator('chatUpdated');
   }
 
   @Subscription(() => Chat, {
-    filter: (payload, variables, context) => payload.chatUpdated?.members.includes(context.user._id),
+    filter: (payload, variables, context) => (
+      payload.chatUpdated?.members.includes(context.user._id)
+    ),
   })
   async chatDeleted(): Promise<AsyncIterator<Chat, any, undefined>> {
     return this.pubSub.asyncIterator('chatDeleted');

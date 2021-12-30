@@ -17,6 +17,6 @@ export class UserUpdateInput {
   @Field({ nullable: true })
     profileGif?: string;
 
-  @Field({defaultValue: false})
+  @Field({ defaultValue: false })
     deactivated: boolean;
 }

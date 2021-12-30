@@ -7,7 +7,8 @@ import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/user.service';
 import { User } from '../users/schemas/user.schema';
 import { AuthDetails } from './schemas/auth.schema';
-import { LoginInput, RegisterInput } from './schemas/auth.input';
+import { LoginInput } from './schemas/auth.login.input';
+import { RegisterInput } from './schemas/auth.register.input';
 
 @Injectable()
 export class AuthService {
@@ -26,8 +27,8 @@ export class AuthService {
     const user = await this.usersService.findOne({
       $and: [
         { $or: [{ email: credential }, { username: credential }] },
-        { deactivated: false }
-      ]
+        { deactivated: false },
+      ],
     });
     if (user && bcrypt.compareSync(password, user.password)) {
       return user;
@@ -56,7 +57,7 @@ export class AuthService {
         email,
         password,
         username,
-        deactivated: false
+        deactivated: false,
       });
       return {
         access_token: this.generateToken(user),

@@ -1,10 +1,11 @@
 import { Logger } from '@nestjs/common';
 import {
-  Args, Mutation, Resolver, Query, Context,
+  Args, Mutation, Resolver,
 } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { AuthService } from './auth.service';
-import { LoginInput, RegisterInput } from './schemas/auth.input';
+import { LoginInput } from './schemas/auth.login.input';
+import { RegisterInput } from './schemas/auth.register.input';
 import { AuthDetails } from './schemas/auth.schema';
 
 @Resolver()
@@ -22,11 +23,11 @@ export class AuthResolver {
   async register(
     @Args('registerData') registerData: RegisterInput,
   ): Promise<AuthDetails> {
-    return await this.authService.register(registerData);
+    return this.authService.register(registerData);
   }
 
   @Mutation(() => AuthDetails)
   async login(@Args('loginData') loginData: LoginInput): Promise<AuthDetails> {
-    return await this.authService.login(loginData);
+    return this.authService.login(loginData);
   }
 }

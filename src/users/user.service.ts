@@ -49,6 +49,6 @@ export class UsersService {
   }
 
   async deactivateAccount(id: string): Promise<User> {
-    return await this.UserModel.findByIdAndUpdate(id, { $set: { deactivated: true } });
+    return this.UserModel.findByIdAndUpdate(id, { $set: { deactivated: true } });
   }
 }
