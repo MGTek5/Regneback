@@ -50,7 +50,7 @@ export class ChatResolver {
 
   @Mutation(() => Chat)
   async deleteChat(@Args('id') id: string): Promise<Chat> {
-    const chat = await this.chatService.findById(id);
+    const chat = await this.chatService.deleteChat(id);
     this.logger.log(`chat ${id} deleted`);
     this.pubSub.publish('chatDeleted', { chatDeleted: chat });
     return chat;
@@ -86,7 +86,7 @@ export class ChatResolver {
 
   @Subscription(() => Chat, {
     filter: (payload, variables, context) => (
-      payload.chatUpdated?.members.includes(context.user._id)
+      payload.chatDeleted?.members.includes(context.user._id)
     ),
   })
   async chatDeleted(): Promise<AsyncIterator<Chat, any, undefined>> {

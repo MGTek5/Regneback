@@ -24,8 +24,8 @@ export class ChatService {
     return this.ChatModel.create({ ...chatCreateData });
   }
 
-  async deleteChat(id: string): Promise<string> {
-    return (await this.ChatModel.findByIdAndDelete(id))._id.toString();
+  async deleteChat(id: string): Promise<Chat> {
+    return this.ChatModel.findByIdAndDelete(id);
   }
 
   async updateChat(chatUpdateData: ChatUpdateInput): Promise<Chat> {
