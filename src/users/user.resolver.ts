@@ -1,4 +1,4 @@
-import { Logger, UseGuards } from '@nestjs/common';
+import { HttpCode, Logger, UseGuards } from '@nestjs/common';
 import {
   Args,
   Context,
@@ -26,16 +26,19 @@ export class UsersResolver {
     this.logger = new Logger('UserResolver');
   }
 
+  @HttpCode(200)
   @Query(() => [User])
   async getUsers(): Promise<Array<User>> {
     return this.userService.findAll();
   }
 
+  @HttpCode(200)
   @Query(() => User)
   async getUser(@Args('id') id: string): Promise<User> {
     return this.userService.findById(id);
   }
 
+  @HttpCode(201)
   @Mutation(() => User)
   async createUser(
     @Args('userCreationData') userCreationData: UserCreationInput,
@@ -46,6 +49,7 @@ export class UsersResolver {
     return user;
   }
 
+  @HttpCode(200)
   @Mutation(() => User)
   async updateUser(
     @Args('userUpdateData') userUpdateData: UserUpdateInput,
@@ -56,6 +60,7 @@ export class UsersResolver {
     return user;
   }
 
+  @HttpCode(200)
   @Mutation(() => User)
   async deleteUser(@Args('id') id: string): Promise<User> {
     const user = await this.userService.deactivateAccount(id);
@@ -69,7 +74,7 @@ export class UsersResolver {
     return this.pubSub.asyncIterator('userCreated');
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  @HttpCode(200)
   @Query(() => User)
   async me(@Context('user') user: User) {
     const d = (

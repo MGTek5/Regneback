@@ -1,4 +1,4 @@
-import { Logger, UseGuards } from '@nestjs/common';
+import { HttpCode, Logger, UseGuards } from '@nestjs/common';
 import {
   Args,
   Resolver,
@@ -34,11 +34,13 @@ export class MessageResolver {
     this.logger = new Logger('MessageResolver');
   }
 
+  @HttpCode(200)
   @Query(() => [Message])
   async getMessages(@Args('chatId') chatId: string) {
     return this.messageService.getMessagesForChat(chatId);
   }
 
+  @HttpCode(200)
   @Mutation(() => Message)
   async createMessage(
     @Args('messageCreateData') messageCreateData: MessageCreateInput,
