@@ -14,13 +14,15 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { User } from '../users/schemas/user.schema';
 import { UsersService } from '../users/user.service';
 import { ChatService } from './chat.service';
-import { ChatCreateInput, ChatUpdateInput } from './schemas/chat.input';
+import { ChatUpdateInput } from './schemas/chat.update.input';
+import { ChatCreateInput } from './schemas/chat.create.input';
 import { Chat } from './schemas/chat.schema';
 
 @Resolver(() => Chat)
 @UseGuards(new AuthGuard())
 export class ChatResolver {
   private pubSub: PubSub;
+
   private logger: Logger;
 
   constructor(
@@ -42,7 +44,7 @@ export class ChatResolver {
   ): Promise<Chat> {
     const chat = await this.chatService.create(chatCreateData);
     this.logger.log(`chat ${chat._id} created`);
-    this.pubSub.publish('chatCreated', {chatCreated: chat});
+    this.pubSub.publish('chatCreated', { chatCreated: chat });
     return chat;
   }
 
@@ -50,7 +52,7 @@ export class ChatResolver {
   async deleteChat(@Args('id') id: string): Promise<Chat> {
     const chat = await this.chatService.findById(id);
     this.logger.log(`chat ${id} deleted`);
-    this.pubSub.publish('chatDeleted', {chatDeleted: chat});
+    this.pubSub.publish('chatDeleted', { chatDeleted: chat });
     return chat;
   }
 
@@ -60,26 +62,26 @@ export class ChatResolver {
   ): Promise<Chat> {
     const d = await this.chatService.updateChat(chatUpdateData);
     this.logger.log(`chat ${chatUpdateData._id} updated`);
-    this.pubSub.publish('chatUpdated', {chatUpdated: d});
+    this.pubSub.publish('chatUpdated', { chatUpdated: d });
     return d;
   }
 
   @Subscription(() => Chat, {
-    filter: (payload, variables, context) => payload.chatCreated?.members.includes(context.user._id)
+    filter: (payload, variables, context) => payload.chatCreated?.members.includes(context.user._id),
   })
   async chatCreated(): Promise<AsyncIterator<Chat, any, undefined>> {
     return this.pubSub.asyncIterator('chatCreated');
   }
 
   @Subscription(() => Chat, {
-    filter: (payload, variables, context) => payload.chatUpdated?.members.includes(context.user._id)
+    filter: (payload, variables, context) => payload.chatUpdated?.members.includes(context.user._id),
   })
   async chatUpdated(): Promise<AsyncIterator<Chat, any, undefined>> {
     return this.pubSub.asyncIterator('chatUpdated');
   }
 
   @Subscription(() => Chat, {
-    filter: (payload, variables, context) => payload.chatUpdated?.members.includes(context.user._id)
+    filter: (payload, variables, context) => payload.chatUpdated?.members.includes(context.user._id),
   })
   async chatDeleted(): Promise<AsyncIterator<Chat, any, undefined>> {
     return this.pubSub.asyncIterator('chatDeleted');

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ChatService } from './chat.service';
-import { MessageCreateInput } from './schemas/message.input';
+import { MessageCreateInput } from './schemas/message.create.input';
 import { Message } from './schemas/message.schema';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class MessageService {
   constructor(private chatService: ChatService) { }
 
   async getMessagesForChat(chatId: string): Promise<Message[]> {
-    return await this.messageModel.find({ chat: chatId }).sort("timestamp");
+    return this.messageModel.find({ chat: chatId }).sort('timestamp');
   }
 
   async createMessage(messageCreateData: MessageCreateInput) {

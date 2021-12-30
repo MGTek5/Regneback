@@ -7,9 +7,10 @@ import {
   Resolver,
   Subscription,
 } from '@nestjs/graphql';
-import { AuthGuard } from '../auth/auth.guard';
 import { PubSub } from 'graphql-subscriptions';
-import { UserCreationInput, UserUpdateInput } from './schemas/user.input';
+import { AuthGuard } from '../auth/auth.guard';
+import { UserCreationInput } from './schemas/user.create.input';
+import { UserUpdateInput } from './schemas/user.update.input';
 import { User } from './schemas/user.schema';
 import { UsersService } from './user.service';
 
@@ -17,6 +18,7 @@ import { UsersService } from './user.service';
 @UseGuards(new AuthGuard())
 export class UsersResolver {
   private pubSub: PubSub;
+
   private logger: Logger;
 
   constructor(private userService: UsersService) {
@@ -67,10 +69,10 @@ export class UsersResolver {
     return this.pubSub.asyncIterator('userCreated');
   }
 
-  //eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   @Query(() => User)
   async me(@Context('user') user: User) {
-    const d = await (
+    const d = (
       await this.userService.findById(user._id.toString())
     ).toJSON();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

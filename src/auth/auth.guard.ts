@@ -18,13 +18,12 @@ export class AuthGuard implements CanActivate {
     return true;
   }
 
-  //eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async validateToken(auth: string) {
     let payload;
     const split = auth.split(' ');
 
-    if (split.length !== 2 || split[0] !== 'Bearer')
-      throw new UnauthorizedException('Invalid Token');
+    if (split.length !== 2 || split[0] !== 'Bearer') throw new UnauthorizedException('Invalid Token');
     const token = split[1];
 
     try {

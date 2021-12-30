@@ -7,23 +7,25 @@ import { User } from '../../users/schemas/user.schema';
 @Schema()
 export class Chat extends Document {
   @Field(() => String)
-  _id: Types.ObjectId;
+    _id: Types.ObjectId;
 
   @Field(() => String)
   @Prop({ type: String, required: true, unique: true })
-  name: string;
+    name: string;
 
   @Field(() => [User])
-  @Prop({ default: [], nullable: true, type: Types.ObjectId, ref: User.name })
-  members: [Types.ObjectId];
+  @Prop({
+    default: [], nullable: true, type: Types.ObjectId, ref: User.name,
+  })
+    members: [Types.ObjectId];
 
   @Field(() => Boolean)
   @Prop({ default: false })
-  private: boolean;
+    private: boolean;
 
   @Field(() => Number)
   @Prop({ default: 0 })
-  lastMessage: number;
+    lastMessage: number;
 }
 
 export const ChatSchema = SchemaFactory.createForClass(Chat);

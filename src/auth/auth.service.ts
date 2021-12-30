@@ -1,10 +1,10 @@
-import { UsersService } from '../users/user.service';
 import {
   BadRequestException,
   Injectable,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { UsersService } from '../users/user.service';
 import { User } from '../users/schemas/user.schema';
 import { AuthDetails } from './schemas/auth.schema';
 import { LoginInput, RegisterInput } from './schemas/auth.input';
@@ -34,6 +34,7 @@ export class AuthService {
     }
     return null;
   }
+
   async login(data: LoginInput): Promise<AuthDetails> {
     const payload = await this.validateUser(data);
     if (payload) {
@@ -44,6 +45,7 @@ export class AuthService {
     }
     throw new BadRequestException('Something went wrong');
   }
+
   async register({
     email,
     username,
