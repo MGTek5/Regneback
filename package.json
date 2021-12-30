@@ -17,12 +17,7 @@
     "migrate:down": "MONGO_URL='localhost:27017' migrate-mongo down -f ./migrate-mongo-config.js",
     "migrate:prod": "MONGO_URL='localhost:27018' migrate-mongo up -f ./migrate-mongo-config.js",
     "migrate:prod:down": "MONGO_URL='localhost:27018' migrate-mongo down -f ./migrate-mongo-config.js",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",

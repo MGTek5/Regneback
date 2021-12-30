@@ -14,14 +14,14 @@ module.exports = {
     node: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.js'],
+  ignorePatterns: ['.eslintrc.js', "data/"],
   rules: {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'no-useless-constructor': 'off',
-    'no-empty-functions': 'off',
+    'no-empty-function': 'off',
     "no-underscore-dangle":  ["error", { "allow": ["_id"] }]
     
   },
