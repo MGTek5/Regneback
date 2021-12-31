@@ -1,4 +1,6 @@
-import { Logger, UseGuards } from '@nestjs/common';
+import {
+  HttpCode, Logger, UseGuards,
+} from '@nestjs/common';
 import {
   Resolver,
   Query,
@@ -33,11 +35,13 @@ export class ChatResolver {
     this.logger = new Logger('ChatResolver');
   }
 
+  @HttpCode(200)
   @Query(() => [Chat])
   async getChats(@Context('user') user: User): Promise<Chat[]> {
     return this.chatService.findAll(user);
   }
 
+  @HttpCode(201)
   @Mutation(() => Chat)
   async createChat(
     @Args('chatCreateData') chatCreateData: ChatCreateInput,
@@ -48,6 +52,7 @@ export class ChatResolver {
     return chat;
   }
 
+  @HttpCode(200)
   @Mutation(() => Chat)
   async deleteChat(@Args('id') id: string): Promise<Chat> {
     const chat = await this.chatService.deleteChat(id);
@@ -56,6 +61,7 @@ export class ChatResolver {
     return chat;
   }
 
+  @HttpCode(200)
   @Mutation(() => Chat)
   async updateChat(
     @Args('chatUpdateDate') chatUpdateData: ChatUpdateInput,

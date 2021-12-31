@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -44,7 +45,7 @@ export class AuthService {
         user: payload,
       };
     }
-    throw new BadRequestException('Something went wrong');
+    throw new UnauthorizedException('Something went wrong');
   }
 
   async register({
