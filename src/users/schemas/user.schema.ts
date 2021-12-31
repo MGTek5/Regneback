@@ -6,19 +6,23 @@ import { Document, Types } from 'mongoose';
 @Schema()
 export class User extends Document {
   @Field(() => String)
-  _id: Types.ObjectId;
+    _id: Types.ObjectId;
 
   @Field(() => String)
   @Prop({ unique: true, required: true, type: String })
-  email: string;
+    email: string;
 
   @Field(() => String)
   @Prop({ required: true, type: String })
-  password: string;
+    password: string;
 
   @Field(() => String)
   @Prop({ required: true, unique: true, type: String })
-  username: string;
+    username: string;
+
+  @Field(() => String, { nullable: true })
+  @Prop({ required: false, type: String })
+    profileGif?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

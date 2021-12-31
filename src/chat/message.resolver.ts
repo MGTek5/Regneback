@@ -1,4 +1,4 @@
-import { Logger, UseGuards } from '@nestjs/common';
+import { HttpCode, Logger, UseGuards } from '@nestjs/common';
 import {
   Args,
   Resolver,
@@ -15,13 +15,14 @@ import { AuthGuard } from '../auth/auth.guard';
 import { ChatService } from './chat.service';
 import { MessageService } from './message.service';
 import { Chat } from './schemas/chat.schema';
-import { MessageCreateInput } from './schemas/message.input';
+import { MessageCreateInput } from './schemas/message.create.input';
 import { Message } from './schemas/message.schema';
 
 @Resolver(() => Message)
 @UseGuards(new AuthGuard())
 export class MessageResolver {
   private pubSub: PubSub;
+
   private logger: Logger;
 
   constructor(
@@ -33,26 +34,28 @@ export class MessageResolver {
     this.logger = new Logger('MessageResolver');
   }
 
+  @HttpCode(200)
   @Query(() => [Message])
   async getMessages(@Args('chatId') chatId: string) {
-    return await this.messageService.getMessagesForChat(chatId);
+    return this.messageService.getMessagesForChat(chatId);
   }
 
+  @HttpCode(200)
   @Mutation(() => Message)
   async createMessage(
     @Args('messageCreateData') messageCreateData: MessageCreateInput,
   ) {
     const m = await this.messageService.createMessage(messageCreateData);
     this.logger.log(`created message ${m._id}`);
-    this.pubSub.publish('messageCreated', {messageCreated: m});
+    this.pubSub.publish('messageCreated', { messageCreated: m });
     return m;
   }
 
   @Subscription(() => Message, {
-    async filter(this:MessageResolver, payload, variables, context) {
-      const chat = await this.chatService.findById(payload.messageCreated.chat)
+    async filter(this: MessageResolver, payload, variables, context) {
+      const chat = await this.chatService.findById(payload.messageCreated.chat);
       return chat?.members.includes(context.user._id);
-    }
+    },
   })
   async messageCreated(): Promise<AsyncIterator<Message, any, undefined>> {
     return this.pubSub.asyncIterator('messageCreated');
@@ -65,6 +68,6 @@ export class MessageResolver {
 
   @ResolveField('author', () => User)
   async resolveAuthor(@Parent() parent: Message) {
-    return await this.userService.findById(parent.author.toString());
+    return this.userService.findById(parent.author.toString());
   }
 }

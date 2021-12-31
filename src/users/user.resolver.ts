@@ -1,4 +1,4 @@
-import { Logger, UseGuards } from '@nestjs/common';
+import { HttpCode, Logger, UseGuards } from '@nestjs/common';
 import {
   Args,
   Context,
@@ -7,9 +7,10 @@ import {
   Resolver,
   Subscription,
 } from '@nestjs/graphql';
-import { AuthGuard } from '../auth/auth.guard';
 import { PubSub } from 'graphql-subscriptions';
-import { UserCreationInput, UserUpdateInput } from './schemas/user.input';
+import { AuthGuard } from '../auth/auth.guard';
+import { UserCreationInput } from './schemas/user.create.input';
+import { UserUpdateInput } from './schemas/user.update.input';
 import { User } from './schemas/user.schema';
 import { UsersService } from './user.service';
 
@@ -17,6 +18,7 @@ import { UsersService } from './user.service';
 @UseGuards(new AuthGuard())
 export class UsersResolver {
   private pubSub: PubSub;
+
   private logger: Logger;
 
   constructor(private userService: UsersService) {
@@ -24,16 +26,19 @@ export class UsersResolver {
     this.logger = new Logger('UserResolver');
   }
 
+  @HttpCode(200)
   @Query(() => [User])
   async getUsers(): Promise<Array<User>> {
     return this.userService.findAll();
   }
 
+  @HttpCode(200)
   @Query(() => User)
   async getUser(@Args('id') id: string): Promise<User> {
     return this.userService.findById(id);
   }
 
+  @HttpCode(201)
   @Mutation(() => User)
   async createUser(
     @Args('userCreationData') userCreationData: UserCreationInput,
@@ -44,6 +49,7 @@ export class UsersResolver {
     return user;
   }
 
+  @HttpCode(200)
   @Mutation(() => User)
   async updateUser(
     @Args('userUpdateData') userUpdateData: UserUpdateInput,
@@ -54,9 +60,10 @@ export class UsersResolver {
     return user;
   }
 
+  @HttpCode(200)
   @Mutation(() => User)
   async deleteUser(@Args('id') id: string): Promise<User> {
-    const user = await this.userService.deleteById(id);
+    const user = await this.userService.deactivateAccount(id);
     this.logger.log(`removed user with id ${id}`);
     this.pubSub.publish('userDeleted', { userDeleted: user });
     return user;
@@ -67,10 +74,10 @@ export class UsersResolver {
     return this.pubSub.asyncIterator('userCreated');
   }
 
-  //eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  @HttpCode(200)
   @Query(() => User)
   async me(@Context('user') user: User) {
-    const d = await (
+    const d = (
       await this.userService.findById(user._id.toString())
     ).toJSON();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
