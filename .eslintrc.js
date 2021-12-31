@@ -22,7 +22,8 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     'no-useless-constructor': 'off',
     'no-empty-function': 'off',
-    "no-underscore-dangle":  ["error", { "allow": ["_id"] }]
-    
+    'import/prefer-default-export':'off',
+    'no-unused-vars':'off',
+    "no-underscore-dangle":  ["error", { "allow": ["_id"] }],
   },
 };
