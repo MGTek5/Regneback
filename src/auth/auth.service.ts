@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  HttpException,
+  ImATeapotException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -45,7 +47,7 @@ export class AuthService {
         user: payload,
       };
     }
-    throw new UnauthorizedException('Something went wrong');
+    throw new ImATeapotException("Something went wrong")
   }
 
   async register({

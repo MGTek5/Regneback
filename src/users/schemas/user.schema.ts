@@ -23,6 +23,10 @@ export class User extends Document {
   @Field(() => String, { nullable: true })
   @Prop({ required: false, type: String })
     profileGif?: string;
+
+  @Field(() => Boolean)
+  @Prop()
+    deactivated: boolean
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
